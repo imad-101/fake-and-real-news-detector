@@ -9,8 +9,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Download NLTK data
 RUN python -c "import nltk; nltk.download('stopwords')"
 
-# Copy application files
+# Copy application files (models last to use cache when code changes)
 COPY main.py .
+
+# Copy model files - updated Jan 13, 2026
 COPY model.pkl .
 COPY vectorizer.pkl .
 
