@@ -3,8 +3,18 @@ from pydantic import BaseModel
 import joblib
 import re
 import traceback
+import nltk
 
 app = FastAPI(title="Fake News Detection API")
+
+# Download NLTK stopwords
+try:
+    from nltk.corpus import stopwords
+    STOPWORDS = set(stopwords.words('english'))
+except:
+    nltk.download('stopwords')
+    from nltk.corpus import stopwords
+    STOPWORDS = set(stopwords.words('english'))
 
 # Load model with error handling
 try:
@@ -43,6 +53,7 @@ class NewsRequest(BaseModel):
 def clean_text(text):
     text = text.lower()
     text = re.sub(r'[^a-z\s]', '', text)
+    text = " ".join(word for word in text.split() if word not in STOPWORDS)
     return text
 
 @app.post("/predict")
